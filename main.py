@@ -29,6 +29,19 @@ try:
         print(user.username)
 
 except instaloader.exceptions.TwoFactorAuthRequiredException:
-    print("Two-factor authentication is required. Please disable it and try again.")
+    # Two-factor authentication is required
+    verification_code = input("Enter the verification code: ")
+    loader.two_factor_login(verification_code)
+
+    # Continue with the remaining steps after successful authentication
+    profile = instaloader.Profile.from_username(loader.context, username)
+    following = set(profile.get_followees())
+    followers = set(profile.get_followers())
+    not_following_back = following - followers
+
+    print("Users who are not following you back:")
+    for user in not_following_back:
+        print(user.username)
+
 except Exception as e:
     print(f"An error occurred: {e}")
